@@ -1,0 +1,27 @@
+# Core Python & Data Handling
+pandas
+numpy
+scikit-learn
+
+# NLP & Transformers
+torch
+transformers
+sentence-transformers
+
+# Semantic Search / Vector Retrieval
+faiss-cpu
+
+# Visualization & Explainability
+matplotlib
+seaborn
+shap
+
+# Web / API Access
+requests
+google-api-python-client
+
+# UI / Dashboard
+streamlit
+
+# Jupyter Notebook Environment
+jupyter

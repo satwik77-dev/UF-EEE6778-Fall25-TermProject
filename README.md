@@ -1,130 +1,220 @@
-## 🧠 ClaimVerify: AI-Powered Fact Verification System
-
----
+## ClaimVerify: AI-Powered Fact-Verification System
 
 ### 🔍 Project Overview
 
-**ClaimVerify** is an intelligent **Fact-verification system** that combines offline fact-check databases with real-time web search capabilities.
-The goal is to analyze a user-provided claim and determine its credibility by retrieving similar fact-checked statements and generating an interpretive model verdict.
+**ClaimVerify** is an intelligent, end-to-end **fact-verification system** that evaluates the credibility of user-submitted claims by combining Offline verified fact-check databases, Semantic retrieval and a Transformer-based classification model.
 
-The system integrates:
+The system performs:
 
-* **Offline structured datasets** (PolitiFact & Snopes) for high-quality, labeled claims.
-* **Transformer-based semantic embeddings (Sentence-BERT)** for similarity detection.
-* **FAISS retrieval** for efficient search.
-* **Streamlit interface** for intuitive, interactive claim analysis.
+1. **Data Preprocessing** – Cleans and merges labeled claims from **PolitiFact** and **Snopes**.
+2. **Semantic Embedding Generation** – Encodes claims using **MiniLM**.
+3. **Efficient Retrieval** – Finds semantically similar past claims using a **FAISS index**.
+4. **Transformer Classification** – Uses a fine-tuned **RoBERTa classifier** to predict a truth label.
+5. **Explainability and UI** – Provides interpretability and user interaction through a **Streamlit app**.
 
 ---
 
-### 🧩 Repository Structure
+### 🧱 System Architecture and Pipeline
+
+The end-to-end workflow is:
+
+**Data → Preprocessing → Retrieval → Classification → Interface**
+
+#### 🔸 Components
+
+* **Data Layer**
+  Sources: PolitiFact and Snopes datasets merged into a unified `merged_factcheck_datasetcleaned.csv`.
+  Processed embeddings and FAISS indices stored under `/data/processed/`.
+
+* **Retrieval Layer**
+  Encodes input claims and searches for nearest neighbors in the FAISS vector index.
+  Output: similar verified claims and verdict metadata.
+
+* **Model Layer**
+  Fine-tuned **RoBERTa** classifier with **temperature-scaled calibration** for reliability.
+  Outputs a confidence-weighted verdict (e.g., *True*, *Mostly True*, *False*).
+
+* **Interface Layer**
+  A **Streamlit** app that allows user interaction, visualization of retrieved evidence, and model explanations.
+
+📊 The detailed architecture diagram as of Project Deliverable 2 is as follows:
+
+<img width="830" height="939" alt="Deliverable2Architecture" src="https://github.com/user-attachments/assets/e673a5dc-6078-4793-b059-222af65645df" />
+
+
+---
+
+### 🗂 Repository Structure
 
 ```bash
 UF-EEE6778-Fall25-TermProject/
 │
 ├── data/
-│   ├── raw/                     # Original datasets (PolitiFact, Snopes)
-│   └── processed/               # Cleaned & merged offline database
+│   ├── raw/                      # Original PolitiFact & Snopes data
+│   └── processed/
+│       ├── merged_factcheck_datasetcleaned.csv
+│       ├── embeddings/           # Numpy/Pickle embeddings & metadata
+│       └── faiss_index/          # FAISS index and metadata CSV
+│
+├── models/
+│   └── classifier/
+│       └── roberta_finetuned/    # Model weights, tokenizer, calibration files
 │
 ├── notebooks/
-│   └── setup.ipynb              # Environment verification & dataset loading
+│   ├── data_preprocessingandmerge.ipynb
+│   ├── OfflineRetrievalSystem.ipynb
+│   ├── ClassifierTraining.ipynb
+│   └── EDA_MergedDataset.ipynb
 │
 ├── src/
-│   ├── preprocess.py            # Text cleaning & harmonization
-│   ├── embeddings.py            # Sentence-BERT embedding functions
-│   ├── retrieval.py             # FAISS search + API fallback logic
-│   ├── model.py                 # Model training & inference
-│   └── explainability.py        # SHAP / interpretability visuals
+│   ├── data_preprocess.py
+│   ├── embeddings.py
+│   ├── retrieval.py
+│   ├── model.py
+│   ├── inference_pipeline.py
+│   ├── explainability.py
+│   └── __init__.py
 │
 ├── ui/
-│   └── streamlit_app.py         # Placeholder for Streamlit interface
+│   ├── streamlit_app.py
+│   ├── assets/
+│   │   ├── dark_theme.css
+│   │   └── light_theme.css
+│   ├── InitialUI.png
+│   └── ResultUI.png
 │
 ├── results/
-│   ├── EDAResults/              # Plots from exploratory analysis
-│   └── SampleUI/                # Example outputs / predictions
+│   ├── EDAResults/               # Exploratory Data Analysis visuals
+│   ├── UI/                       # Interface screenshots
+│   └── training_logs/            # Model metrics and plots
 │
-├── docs/
-│   └── architecture_diagram.png # Planned architecture diagram
+├── Architecture/
+│   ├── architecture_diagram.png
+│   └── Deliverable2Architecture.png
 │
 ├── DeliverableReports/
-│   └── Deliverable1Report.pdf   # Technical Blueprint Report
+│   ├── ProjectDeliverablleReport1.pdf
+│   └── ProjectDeliverableReport2.pdf
 │
-├── requirements.txt             # Dependency list
-├── .gitignore                   # Ignore unnecessary files
-└── README.md                    # You are here!
+├── requirements.txt
+├── .gitignore
+└── README.md
 ```
 
 ---
 
 ### ⚙️ Installation & Setup
 
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/<your-username>/UF-EEE6778-Fall25-TermProject.git
-   cd UF-EEE6778-Fall25-TermProject
-   ```
-
-2. **Create and activate a virtual environment**
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate     # For macOS/Linux
-   venv\Scripts\activate        # For Windows
-   ```
-
-3. **Install dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
----
-
-### 🧪 Running the Notebook
-
-To verify the setup and preview early exploration:
+#### 1️⃣ Clone the repository
 
 ```bash
-jupyter notebook notebooks/setup.ipynb
+git clone https://github.com/<your-username>/UF-EEE6778-Fall25-TermProject.git
+cd UF-EEE6778-Fall25-TermProject
 ```
 
-The notebook performs:
+#### 2️⃣ Create and activate a virtual environment
 
-* Environment check (package imports)
-* Dataset loading from `/data/raw/`
-* Basic exploration (counts, verdict distribution, sample plots)
+```bash
+python -m venv venv
+source venv/bin/activate        # macOS/Linux
+venv\Scripts\activate           # Windows
+```
 
----
+#### 3️⃣ Install dependencies
 
-### 🗂 Dataset Information
-
-| Dataset               | Source                                        | Type           | Records | Label Categories                                                 |
-| --------------------- | --------------------------------------------- | -------------- | ------- | ---------------------------------------------------------------- |
-| PolitiFact Fact-Check | Kaggle (https://www.kaggle.com/datasets/rmisra/politifact-fact-check-dataset?resource=download&select=politifact_factcheck_data.json) | Tabular (JSON) | ~21,000 | true, mostly true, half true, mostly false, false, pants-on-fire |
-| Snopes Fact-News      | Kaggle (https://www.kaggle.com/datasets/ambityga/snopes-factnews-data/data?select=snopeswithsum.csv)         | Tabular (CSV)  | ~10,000 | true, false, miscaptioned, mixture                               |
-
-The final **offline database** (`data/processed/offline_db.csv`) merges these two datasets for structured retrieval.
-When a claim is not found offline, the system can query the **Google Custom Search API** for live fact-checking articles.
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
-### 🖥️ Planned Interface
+### 🧪 Model Training and Evaluation
 
-The Streamlit app (`ui/streamlit_app.py`) will:
+Run the training notebooks sequentially:
 
-* Accept a **claim text input**
-* Retrieve **similar existing claims**
-* Display **model verdict + interpretability insights**
-* Offer a **user-friendly confidence visualization**
+1. **Data Preprocessing**
+
+   ```bash
+   jupyter notebook notebooks/data_preprocessingandmerge.ipynb
+   ```
+
+   * Cleans and merges datasets
+   * Generates `merged_factcheck_dataset.csv`
+
+2. **Retrieval Setup**
+
+   ```bash
+   jupyter notebook notebooks/OfflineRetrievalSystem.ipynb
+   ```
+
+   * Builds Sentence-BERT embeddings
+   * Creates FAISS index for claim retrieval
+
+3. **Classifier Training**
+
+   ```bash
+   jupyter notebook notebooks/ClassifierTraining.ipynb
+   ```
+
+   * Fine-tunes RoBERTa model
+   * Outputs model metrics and saves weights to `/models/classifier/roberta_finetuned/`
+
+4. **Evaluation**
+
+   * Metrics, confusion matrix, and sample predictions saved to `/results/`
 
 ---
 
-### Reproducibility Notes
+### 🖥️ Running the Streamlit Interface
 
-* All required datasets (except large originals) are included in `data/`
-* Scripts in `/src` are modular and can be run independently
-* Results and EDA plots are stored under `/results/`
-* `setup.ipynb` runs without modification on any standard Python 3.9+ environment
+To launch the prototype user interface:
+
+```bash
+streamlit run ui/streamlit_app.py
+```
+
+**Features available now (Deliverable 2):**
+
+* Enter a textual claim
+* Retrieve top-k similar verified claims
+* Display corresponding verdicts and sources
+* Show model’s predicted label with confidence
+* Present dark/light themes for user preference
+
+**Example Outputs:**
+These are the sample UI Outputs :
+<img width="682" height="963" alt="ResultUI" src="https://github.com/user-attachments/assets/da729dcf-a4eb-4713-ba3b-a676616a2faf" />
+
+
+---
+
+### 📊 Results Summary
+
+|             Metric | Value (Prototype) | Notes                    |
+| -----------------: | ----------------: | ------------------------ |
+|           Accuracy |             ~78 % | On merged dataset        |
+|           F1-Score |              0.75 | Macro-averaged           |
+|  Calibration Error |             < 0.1 | Post temperature scaling |
+| Retrieval Recall@3 |              0.82 | FAISS-based retrieval    |
+
+---
+
+### 🧩 Key Files and Artifacts
+
+| File / Folder                               | Purpose                              |
+| ------------------------------------------- | ------------------------------------ |
+| `src/retrieval.py`                          | FAISS retrieval engine               |
+| `src/inference_pipeline.py`                 | End-to-end claim-to-verdict pipeline |
+| `src/explainability.py`                     | Captum/SHAP interpretability         |
+| `models/classifier/roberta_finetuned/`      | Fine-tuned RoBERTa model             |
+| `ui/streamlit_app.py`                       | User interface implementation        |
+| `Architecture/Deliverable2Architecture.png` | System pipeline diagram              |
+
+---
+
+### 📦 Requirements
+
+For required dependencies refer `requirements.txt`
 
 ---
 
@@ -133,4 +223,17 @@ The Streamlit app (`ui/streamlit_app.py`) will:
 **Sai Satwik Yarapothini**
 M.S. Applied Data Science
 University of Florida
-📧 *[saisatwi.yarapot@ufl.edu](mailto:saisatwi.yarapot@ufl.edu)*
+📧 [saisatwi.yarapot@ufl.edu](mailto:saisatwi.yarapot@ufl.edu)
+
+---
+
+### 🚀 Planned Features — Deliverable 3 (Final System)
+
+| Category                             | Planned Addition               | Description                                                |
+| ------------------------------------ | ------------------------------ | ---------------------------------------------------------- |
+| **Web Search Integration**           | Online retrieval module        | Incorporate Google Fact-Check API / live news verification |
+| **Enhanced Explainability**          | LIME + Attention visualization | Show why the model classified a claim a certain way        |
+| **Confidence Calibration Dashboard** | Visualization of uncertainty   | Display prediction reliability to end users                |
+| **Performance Optimization**         | Model pruning / batching       | Faster inference for real-time response                    |
+| **Expanded UI Functionality**        | Upload batch claims            | CSV input + summary statistics                             |
+| **Comprehensive Report**             | Deliverable 3 report           | Full evaluation metrics and deployment notes               |

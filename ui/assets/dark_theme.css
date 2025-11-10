@@ -1,0 +1,87 @@
+/* Dark Theme */
+body {
+    background-color: #0D1117;
+    color: #E0E0E0;
+    font-family: 'Inter', sans-serif;
+}
+
+.header-container {
+    text-align: center;
+    padding: 20px 0;
+}
+
+h1 {
+    color: #FFFFFF;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+p {
+    color: #B0B0B0;
+}
+
+.verdict-card {
+    text-align: center;
+    color: #FFFFFF;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+.token-highlight {
+    font-weight: 500;
+    color: #fff;
+}
+
+.explanation-box {
+    padding: 1rem;
+    background-color: #1E1E2F;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+}
+
+.evidence-card {
+    background-color: #161B22;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.evidence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+}
+
+.source {
+    font-weight: 500;
+    color: #9E9E9E;
+}
+
+.evidence-body p {
+    margin: 0.5rem 0;
+    color: #E0E0E0;
+}
+
+a {
+    color: #6C63FF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.evidence-footer {
+    font-size: 0.85rem;
+    color: #A0A0A0;
+    margin-top: 0.5rem;
+}

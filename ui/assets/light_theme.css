@@ -1,0 +1,88 @@
+/* Light Theme */
+body {
+    background-color: #F8F9FA;
+    color: #212121;
+    font-family: 'Inter', sans-serif;
+}
+
+.header-container {
+    text-align: center;
+    padding: 20px 0;
+}
+
+h1 {
+    color: #111;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+p {
+    color: #555;
+}
+
+.verdict-card {
+    text-align: center;
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+.token-highlight {
+    font-weight: 500;
+    color: #000;
+}
+
+.explanation-box {
+    padding: 1rem;
+    background-color: #ECECEC;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+}
+
+.evidence-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.evidence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+}
+
+.source {
+    font-weight: 500;
+    color: #555;
+}
+
+.evidence-body p {
+    margin: 0.5rem 0;
+    color: #333;
+}
+
+a {
+    color: #3F51B5;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.evidence-footer {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+}

@@ -31,7 +31,7 @@ Key updates in Deliverable 3:
 
 📌 This architecture is illustrated here:
 
-**Fig. 1 — Deliverable 3 System Architecture**  
+**Deliverable 3 System Architecture**  
 <img width="436" height="823" alt="Deliverable3Architecture" src="https://github.com/user-attachments/assets/7db93553-6f99-4e26-80e3-72b212acf519" />
 
 

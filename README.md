@@ -1,118 +1,119 @@
-## ClaimVerify: AI-Powered Fact-Verification System
+````markdown
+# ClaimVerify: AI-Powered Fact Verification System (Deliverable 3)
 
 ### 🔍 Project Overview
 
-**ClaimVerify** is an intelligent, end-to-end **fact-verification system** that evaluates the credibility of user-submitted claims by combining Offline verified fact-check databases, Semantic retrieval and a Transformer-based classification model.
+**ClaimVerify** is an AI-driven pipeline designed to assess the credibility of user-submitted claims by combining:
 
-The system performs:
+- An **offline expert-verified fact-check database** (PolitiFact + Snopes)
+- **Semantic retrieval** using MiniLM embeddings and a FAISS index
+- A **fine-tuned RoBERTa v2 classifier** with calibrated probabilities
+- A **hybrid retrieval fallback** (offline + Google stub)
+- A redesigned **Streamlit interface** with improved usability and transparency
 
-1. **Data Preprocessing** – Cleans and merges labeled claims from **PolitiFact** and **Snopes**.
-2. **Semantic Embedding Generation** – Encodes claims using **MiniLM**.
-3. **Efficient Retrieval** – Finds semantically similar past claims using a **FAISS index**.
-4. **Transformer Classification** – Uses a fine-tuned **RoBERTa classifier** to predict a truth label.
-5. **Explainability and UI** – Provides interpretability and user interaction through a **Streamlit app**.
+Deliverable 3 introduces a more robust, consistent, and user-centered system, focusing on **pipeline stability**, **uncertainty handling**, **explainability**, and **interaction quality**.
 
 ---
 
-### 🧱 System Architecture and Pipeline
+## 🧱 Updated System Architecture
 
-The end-to-end workflow is:
+The full end-to-end workflow now follows:
 
-**Data → Preprocessing → Retrieval → Classification → Interface**
+**User Claim → Preprocessing → Offline Retrieval → Optional Online Fallback → Classification → Calibration → Explainability → UI Display**
 
-#### 🔸 Components
+Key updates in Deliverable 3:
 
-* **Data Layer**
-  Sources: PolitiFact and Snopes datasets merged into a unified `merged_factcheck_datasetcleaned.csv`.
-  Processed embeddings and FAISS indices stored under `/data/processed/`.
+- Unified preprocessing for embeddings + classifier  
+- Temperature scaling v2 for better-calibrated confidence  
+- Integrated Gradients explanation heatmaps  
+- Hybrid offline + online-stub retrieval  
+- UI warnings for low similarity  
+- Color-coded prediction bars based on thresholds  
 
-* **Retrieval Layer**
-  Encodes input claims and searches for nearest neighbors in the FAISS vector index.
-  Output: similar verified claims and verdict metadata.
+📌 This architecture is illustrated here:
 
-* **Model Layer**
-  Fine-tuned **RoBERTa** classifier with **temperature-scaled calibration** for reliability.
-  Outputs a confidence-weighted verdict (e.g., *True*, *Mostly True*, *False*).
-
-* **Interface Layer**
-  A **Streamlit** app that allows user interaction, visualization of retrieved evidence, and model explanations.
-
-📊 The detailed architecture diagram as of Project Deliverable 2 is as follows:
-
-<img width="830" height="939" alt="Deliverable2Architecture" src="https://github.com/user-attachments/assets/e673a5dc-6078-4793-b059-222af65645df" />
+**Fig. 1 — Deliverable 3 System Architecture**  
+<img width="436" height="823" alt="Deliverable3Architecture" src="https://github.com/user-attachments/assets/7db93553-6f99-4e26-80e3-72b212acf519" />
 
 
 ---
 
-### 🗂 Repository Structure
+## 🗂 Repository Structure (Deliverable 3)
 
 ```bash
 UF-EEE6778-Fall25-TermProject/
 │
 ├── data/
-│   ├── raw/                      # Original PolitiFact & Snopes data
+│   ├── raw/                                  # Original PolitiFact & Snopes datasets
 │   └── processed/
 │       ├── merged_factcheck_datasetcleaned.csv
-│       ├── embeddings/           # Numpy/Pickle embeddings & metadata
-│       └── faiss_index/          # FAISS index and metadata CSV
+│       ├── embeddings/                       # MiniLM embeddings + metadata
+│       └── faiss_index/                      # FAISS index + mapping files
 │
 ├── models/
 │   └── classifier/
-│       └── roberta_finetuned/    # Model weights, tokenizer, calibration files
+│       └── roberta_finetuned_v2/             # Deliverable 3 trained model + calibration
 │
 ├── notebooks/
+│   ├── ClassifierTraining_Deliverable3.ipynb
+│   ├── ClassifierTrainingDeliverable2.ipynb
+│   ├── HybridRetrieval_Deliverable3.ipynb
+│   ├── InferencePipeline_Deliverable3.ipynb
+│   ├── OfflineRetrievalSystemDeliverable2.ipynb
 │   ├── data_preprocessingandmerge.ipynb
-│   ├── OfflineRetrievalSystem.ipynb
-│   ├── ClassifierTraining.ipynb
-│   └── EDA_MergedDataset.ipynb
+│   ├── EDA_MergedDataset.ipynb
+│   └── setup.ipynb
 │
 ├── src/
 │   ├── data_preprocess.py
 │   ├── embeddings.py
 │   ├── retrieval.py
 │   ├── model.py
-│   ├── inference_pipeline.py
+│   ├── inference_pipeline.py                 # (Legacy) Deliverable 2 pipeline
 │   ├── explainability.py
 │   └── __init__.py
 │
 ├── ui/
-│   ├── streamlit_app.py
+│   ├── InferencePipeline_Deliverable3.py     # NEW pipeline for UI
+│   ├── Streamlit_UI_Deliverable3.py          # NEW improved UI
 │   ├── assets/
 │   │   ├── dark_theme.css
 │   │   └── light_theme.css
-│   ├── InitialUI.png
-│   └── ResultUI.png
+│   └── UI Results/
+│       ├── Deliverable2/
+│       └── Deliverable3/                     # Deliverable 3 UI output screenshots
 │
 ├── results/
-│   ├── EDAResults/               # Exploratory Data Analysis visuals
-│   ├── UI/                       # Interface screenshots
-│   └── training_logs/            # Model metrics and plots
+│   ├── EDAResults/                           # Distribution plots, summaries
+│   ├── Deliverable3/                                   # Screenshots used in report
 │
 ├── Architecture/
-│   ├── architecture_diagram.png
-│   └── Deliverable2Architecture.png
+│   ├── Deliverable3Architecture
+│   ├── Deliverable2Architecture
+│   └── Deliverable1Architecture
 │
 ├── DeliverableReports/
-│   ├── ProjectDeliverablleReport1.pdf
-│   └── ProjectDeliverableReport2.pdf
+│   ├── ProjectDeliverableReport1.pdf
+│   ├── ProjectDeliverableReport2.pdf
+│   └── ProjectDeliverableReport3.pdf         # Deliverable 3 Report
 │
 ├── requirements.txt
 ├── .gitignore
 └── README.md
-```
+````
 
 ---
 
-### ⚙️ Installation & Setup
+## ⚙️ Installation & Setup
 
-#### 1️⃣ Clone the repository
+### 1️⃣ Clone the repository
 
 ```bash
 git clone https://github.com/<your-username>/UF-EEE6778-Fall25-TermProject.git
 cd UF-EEE6778-Fall25-TermProject
 ```
 
-#### 2️⃣ Create and activate a virtual environment
+### 2️⃣ Create a virtual environment
 
 ```bash
 python -m venv venv
@@ -120,7 +121,7 @@ source venv/bin/activate        # macOS/Linux
 venv\Scripts\activate           # Windows
 ```
 
-#### 3️⃣ Install dependencies
+### 3️⃣ Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -128,112 +129,110 @@ pip install -r requirements.txt
 
 ---
 
-### 🧪 Model Training and Evaluation
+## 🧪 Running the Updated Deliverable 3 Pipeline
 
-Run the training notebooks sequentially:
-
-1. **Data Preprocessing**
-
-   ```bash
-   jupyter notebook notebooks/data_preprocessingandmerge.ipynb
-   ```
-
-   * Cleans and merges datasets
-   * Generates `merged_factcheck_dataset.csv`
-
-2. **Retrieval Setup**
-
-   ```bash
-   jupyter notebook notebooks/OfflineRetrievalSystem.ipynb
-   ```
-
-   * Builds Sentence-BERT embeddings
-   * Creates FAISS index for claim retrieval
-
-3. **Classifier Training**
-
-   ```bash
-   jupyter notebook notebooks/ClassifierTraining.ipynb
-   ```
-
-   * Fine-tunes RoBERTa model
-   * Outputs model metrics and saves weights to `/models/classifier/roberta_finetuned/`
-
-4. **Evaluation**
-
-   * Metrics, confusion matrix, and sample predictions saved to `/results/`
-
----
-
-### 🖥️ Running the Streamlit Interface
-
-To launch the prototype user interface:
+### **1. Run preprocessing (if needed)**
 
 ```bash
-streamlit run ui/streamlit_app.py
+jupyter notebook notebooks/data_preprocessingandmerge.ipynb
 ```
 
-**Features available now (Deliverable 2):**
+### **2. Build/Load FAISS Retrieval System**
 
-* Enter a textual claim
-* Retrieve top-k similar verified claims
-* Display corresponding verdicts and sources
-* Show model’s predicted label with confidence
-* Present dark/light themes for user preference
+```bash
+jupyter notebook notebooks/HybridRetrieval_Deliverable3.ipynb
+```
 
-**Example Outputs:**
-These are the sample UI Outputs :
-<img width="682" height="963" alt="ResultUI" src="https://github.com/user-attachments/assets/da729dcf-a4eb-4713-ba3b-a676616a2faf" />
+### **3. Train or load the Deliverable 3 classifier**
+
+```bash
+jupyter notebook notebooks/ClassifierTraining_Deliverable3.ipynb
+```
+
+### **4. Run the new inference pipeline**
+
+```bash
+jupyter notebook notebooks/InferencePipeline_Deliverable3.ipynb
+```
+
+---
+
+## 🖥️ Running the Deliverable 3 Streamlit UI
+
+```bash
+streamlit run ui/Streamlit_UI_Deliverable3.py
+```
+
+### New UI Enhancements (D3)
+
+* Light theme with consistent typography
+* Color-coded verdict bars (True = green, False = red, Uncertain = yellow)
+* Warning banner for **low similarity**
+* Token-level **explainability heatmap**
+* Scrollable evidence cards
+* Cleaner layout + improved spacing
+
+📌 Example UI Output for Deliverable 3:
+
+<img width="1908" height="991" alt="StreamlitUI_Deliverable3" src="https://github.com/user-attachments/assets/66a8a51c-29b3-45e2-b2b0-1385a3254d79" />
+<img width="1892" height="979" alt="ui_sample_deliverable3" src="https://github.com/user-attachments/assets/4ba582a7-cedf-4610-889a-c77185fb2fca" />
 
 
 ---
 
-### 📊 Results Summary
+## 📊 Deliverable 3 Performance Summary
 
-|             Metric | Value (Prototype) | Notes                    |
-| -----------------: | ----------------: | ------------------------ |
-|           Accuracy |             ~78 % | On merged dataset        |
-|           F1-Score |              0.75 | Macro-averaged           |
-|  Calibration Error |             < 0.1 | Post temperature scaling |
-| Retrieval Recall@3 |              0.82 | FAISS-based retrieval    |
+| Metric              | Deliverable 2 | Deliverable 3 | Change         |
+| ------------------- | ------------- | ------------- | -------------- |
+| **Accuracy**        | 0.61          | 0.54          | –0.07          |
+| **Macro F1**        | 0.49          | 0.5057        | ↑              |
+| **Macro Precision** | 0.51          | 0.50          | –0.01          |
+| **Macro Recall**    | 0.50          | 0.50          | ~              |
+| **Brier Score**     | 0.1706        | 0.18          | Slightly bad |
 
----
+📌 Full comparison table:
+<img width="661" height="359" alt="comparison_table" src="https://github.com/user-attachments/assets/76a39703-a4d7-46d0-8d6e-63d48bfed7a3" />
 
-### 🧩 Key Files and Artifacts
+📌 Deliverable 3 confusion matrix:
+<img width="445" height="386" alt="confusion_matrix_D3" src="https://github.com/user-attachments/assets/8cedf87a-abfe-4b41-b087-c63003e55971" />
 
-| File / Folder                               | Purpose                              |
-| ------------------------------------------- | ------------------------------------ |
-| `src/retrieval.py`                          | FAISS retrieval engine               |
-| `src/inference_pipeline.py`                 | End-to-end claim-to-verdict pipeline |
-| `src/explainability.py`                     | Captum/SHAP interpretability         |
-| `models/classifier/roberta_finetuned/`      | Fine-tuned RoBERTa model             |
-| `ui/streamlit_app.py`                       | User interface implementation        |
-| `Architecture/Deliverable2Architecture.png` | System pipeline diagram              |
 
 ---
 
-### 📦 Requirements
+## 🧩 Key Files
 
-For required dependencies refer `requirements.txt`
+| File                                      | Description                           |
+| ----------------------------------------- | ------------------------------------- |
+| `ui/Streamlit_UI_Deliverable3.py`         | Updated UI with new design + warnings |
+| `ui/InferencePipeline_Deliverable3.py`    | Final inference logic used by UI      |
+| `models/classifier/roberta_finetuned_v2/` | Final trained + calibrated model      |
+| `src/explainability.py`                   | Integrated Gradients implementation   |
+| `docs/architecture_deliverable3.png`      | Final architecture diagram            |
 
 ---
 
-### 🧑‍💻 Author
+## ⚠️ Known Issues & Limitations
+
+* **Uncertain** class still underperforms (dataset ambiguity)
+* Online fallback currently uses **Google stub**, not full API
+* Integrated Gradients is computationally expensive on CPU/MPS
+* Retrieval similarity < 0.70 may produce weaker evidence
+
+---
+
+## 👤 Author
 
 **Sai Satwik Yarapothini**
-M.S. Applied Data Science
-University of Florida
+M.S. Applied Data Science, University of Florida
 📧 [saisatwi.yarapot@ufl.edu](mailto:saisatwi.yarapot@ufl.edu)
 
 ---
 
-### 🚀 Planned Features — Deliverable 3 (Final System)
+## 🚀 Planned Work for Final Deliverable (D4)
 
-| Category                             | Planned Addition               | Description                                                |
-| ------------------------------------ | ------------------------------ | ---------------------------------------------------------- |
-| **Web Search Integration**           | Online retrieval module        | Incorporate Google Fact-Check API / live news verification |
-| **Enhanced Explainability**          | LIME + Attention visualization | Show why the model classified a claim a certain way        |
-| **Confidence Calibration Dashboard** | Visualization of uncertainty   | Display prediction reliability to end users                |
-| **Performance Optimization**         | Model pruning / batching       | Faster inference for real-time response                    |
-| **Expanded UI Functionality**        | Upload batch claims            | CSV input + summary statistics                             |
-| **Comprehensive Report**             | Deliverable 3 report           | Full evaluation metrics and deployment notes               |
+* Full research-grade IEEE paper (10–12 pages)
+* Final integration of live online fact-check API
+* Better handling of the **Uncertain** class
+* Robust user-study and usability evaluation
+* Improved explanation consistency and potential LIME fallback
+* Extended bias, fairness, and RAI analysis

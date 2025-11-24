@@ -2,7 +2,7 @@
 
 ### 🔍 Project Overview
 
-**ClaimVerify** is an AI-driven pipeline designed to assess the credibility of user-submitted claims by combining:
+**ClaimVerify** is an AI-driven Fact Verification System designed to assess the credibility of user-submitted claims by combining:
 
 - An **offline expert-verified fact-check database** (PolitiFact + Snopes)
 - **Semantic retrieval** using MiniLM embeddings and a FAISS index

@@ -171,10 +171,12 @@ streamlit run ui/Streamlit_UI_Deliverable3.py
 * Scrollable evidence cards
 * Cleaner layout + improved spacing
 
-📌 Example UI Output for Deliverable 3:
+Example UI Outputs for Deliverable 3 are as follows :
 
 <img width="1908" height="991" alt="StreamlitUI_Deliverable3" src="https://github.com/user-attachments/assets/66a8a51c-29b3-45e2-b2b0-1385a3254d79" />
 <img width="1892" height="979" alt="ui_sample_deliverable3" src="https://github.com/user-attachments/assets/4ba582a7-cedf-4610-889a-c77185fb2fca" />
+<img width="1877" height="970" alt="ui_sampledeliverable3" src="https://github.com/user-attachments/assets/283c0fa2-a88e-4e1f-b567-faede4dadfea" />
+
 
 
 ---

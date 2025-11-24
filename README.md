@@ -1,4 +1,3 @@
-````markdown
 # ClaimVerify: AI-Powered Fact Verification System (Deliverable 3)
 
 ### 🔍 Project Overview

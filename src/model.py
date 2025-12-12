@@ -1,33 +1,43 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "86c69ac7-0684-48b2-ad31-4382da85e608",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python [conda env:base] *",
-   "language": "python",
-   "name": "conda-base-py"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.13.5"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import torch
+import pickle
+import numpy as np
+from scipy.special import softmax
+from transformers import RobertaTokenizerFast, RobertaForSequenceClassification
+
+class ClaimClassifier:
+    """
+    Calibrated RoBERTa-based claim classifier.
+    """
+
+    def __init__(self, model_dir: str, temperature_path: str, label_map_path: str):
+        self.device = torch.device("cpu")
+
+        self.tokenizer = RobertaTokenizerFast.from_pretrained(model_dir)
+        self.model = RobertaForSequenceClassification.from_pretrained(model_dir)
+        self.model.to(self.device)
+        self.model.eval()
+
+        with open(label_map_path, "rb") as f:
+            self.label_map = pickle.load(f)
+
+        self.id2label = {v: k for k, v in self.label_map.items()}
+        self.temperature = float(torch.load(temperature_path)["temperature"])
+
+    def predict(self, text: str):
+        inputs = self.tokenizer(
+            text,
+            truncation=True,
+            padding="max_length",
+            max_length=128,
+            return_tensors="pt"
+        ).to(self.device)
+
+        with torch.no_grad():
+            logits = self.model(**inputs).logits[0] / self.temperature
+            probs = softmax(logits.cpu().numpy())
+
+        pred_idx = int(np.argmax(probs))
+        confidence = float(np.max(probs))
+        label = self.id2label[pred_idx]
+
+        return label, confidence

@@ -1,69 +1,40 @@
-# ClaimVerify: Offline Retrieval Function
-# Author: Sai Satwik Yarapothini
-
+import time
 import faiss
-import numpy as np
 import pandas as pd
-from pathlib import Path
-from sentence_transformers import SentenceTransformer
+from typing import List, Tuple
+from src.preprocessing import normalize_text
 
+class FAISSRetriever:
+    """
+    Offline semantic retrieval using MiniLM embeddings + FAISS.
+    """
 
-# Load FAISS and metadata (initialize once)
+    def __init__(self, index_path: str, metadata_path: str, embedding_model):
+        self.index = faiss.read_index(index_path)
+        self.metadata = pd.read_csv(metadata_path)
+        self.embedding_model = embedding_model
 
-class ClaimRetrievalEngine:
-    def __init__(self, base_path=None):
-        # Define paths
-        if base_path is None:
-            base_path = Path("/Users/satwik/Documents/GitHub/UF-EEE6778-Fall25-TermProject")
-        self.base_path = Path(base_path)
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = 5
+    ) -> Tuple[List[dict], float]:
+        start = time.time()
 
-        self.index_path = self.base_path / "data/processed/faiss_index/claimverify_faiss_index.bin"
-        self.meta_path = self.base_path / "data/processed/faiss_index/claimverify_faiss_metadata.csv"
+        query_norm = normalize_text(query)
+        embedding = self.embedding_model.encode(
+            [query_norm],
+            normalize_embeddings=True
+        )
 
-        # Load FAISS index
-        print("📂 Loading FAISS index and metadata...")
-        self.index = faiss.read_index(str(self.index_path))
-        self.metadata = pd.read_csv(self.meta_path)
-        print(f"✅ Loaded FAISS index with {self.index.ntotal} vectors.")
-        print(f" Metadata records: {len(self.metadata)}")
+        scores, idxs = self.index.search(embedding, top_k)
 
-        # Load embedding model
-        print("⚙️ Loading SentenceTransformer model...")
-        self.model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-        print("✅ Model loaded successfully.")
-
-    # ------------------------------------------------------------
-    # Core retrieval function
-    # ------------------------------------------------------------
-    def retrieve_similar_claims(self, query_text, top_k=5):
-        """
-        Given a claim (query_text), retrieve top_k similar verified claims
-        from the FAISS index.
-        Returns a pandas DataFrame with claim info + similarity scores.
-        """
-
-        if not query_text or not isinstance(query_text, str):
-            raise ValueError("Query text must be a non-empty string.")
-
-        # Embed and normalize
-        query_vec = self.model.encode([query_text], normalize_embeddings=True)
-
-        # Search FAISS
-        scores, indices = self.index.search(query_vec, top_k)
-
-        # Build result DataFrame
         results = []
-        for rank, idx in enumerate(indices[0]):
-            row = self.metadata.iloc[idx]
-            results.append({
-                "rank": rank + 1,
-                "claim_id": row["claim_id"],
-                "claim_text": row["claim_text"],
-                "similarity": float(scores[0][rank]),
-                "verdict_mapped": row["verdict_mapped"],
-                "summary": row.get("summary", None),
-                "url": row.get("url", None),
-                "dataset_source": row.get("dataset_source", None)
-            })
+        for rank, (idx, score) in enumerate(zip(idxs[0], scores[0]), start=1):
+            row = self.metadata.iloc[idx].to_dict()
+            row["rank"] = rank
+            row["similarity"] = float(score)
+            results.append(row)
 
-        return pd.DataFrame(results).sort_values(by="similarity", ascending=False)
+        latency = (time.time() - start) * 1000.0
+        return results, latency

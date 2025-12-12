@@ -156,6 +156,9 @@ Example Results
 📊 Performance Summary (Final System):
 
 The final ClaimVerify system achieves balanced multi-class performance on a three-class fact-verification task while prioritizing calibrated confidence and conservative decision-making.
+
+
+
 <img width="290" height="251" alt="Screenshot 2025-12-11 at 21 08 25" src="https://github.com/user-attachments/assets/cd9e4ab2-abd4-428f-951f-480f86f1fbb3" />
 <img width="289" height="79" alt="Screenshot 2025-12-11 at 21 08 12" src="https://github.com/user-attachments/assets/9afdd4a0-a54e-44b5-b0f7-8e045bdd8859" />
 <img width="262" height="111" alt="Screenshot 2025-12-11 at 21 08 02" src="https://github.com/user-attachments/assets/7c05a7c0-6db2-4ede-ab47-a5f15e212660" />

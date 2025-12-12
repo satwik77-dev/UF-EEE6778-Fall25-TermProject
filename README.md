@@ -105,20 +105,25 @@ UF-EEE6778-Fall25-TermProject/
 └── README.md                                 # Project documentation
 ```
 
-⚙️ Installation & Setup
-1️⃣ Clone the Repository
+⚙️ Installation & Setup:
+
+1️⃣ Clone the Repository:
 git clone https://github.com/<your-username>/UF-EEE6778-Fall25-TermProject.git
+
 cd UF-EEE6778-Fall25-TermProject
 
-2️⃣ Create and Activate a Virtual Environment
+2️⃣ Create and Activate a Virtual Environment:
+
 python -m venv venv
 source venv/bin/activate        # macOS / Linux
 venv\Scripts\activate           # Windows
 
-3️⃣ Install Dependencies
+3️⃣ Install Dependencies:
+
 pip install -r requirements.txt
 
-🖥️ Running the Streamlit Application
+🖥️ Running the Streamlit Application:
+
 streamlit run ui/ClaimVerify_FinalSystem.py
 
 

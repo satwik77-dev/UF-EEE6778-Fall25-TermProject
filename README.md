@@ -108,7 +108,7 @@ UF-EEE6778-Fall25-TermProject/
 ⚙️ Installation & Setup:
 
 1️⃣ Clone the Repository:
-git clone https://github.com/<your-username>/UF-EEE6778-Fall25-TermProject.git
+git clone https://github.com/satwik77-dev/UF-EEE6778-Fall25-TermProject
 
 cd UF-EEE6778-Fall25-TermProject
 

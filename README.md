@@ -1,4 +1,4 @@
-ClaimVerify: AI-Powered Fact Verification System
+# ClaimVerify: AI-Powered Fact Verification System
 
 🔍 Project Overview:
 

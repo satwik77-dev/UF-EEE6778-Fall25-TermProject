@@ -46,6 +46,7 @@ Key architectural characteristics include:
 This architecture enables ClaimVerify to handle both previously fact-checked claims and emerging or novel claims in a controlled and interpretable manner.
 
 🗂 Repository Structure
+```bash
 UF-EEE6778-Fall25-TermProject/
 │
 ├── data/
@@ -102,6 +103,7 @@ UF-EEE6778-Fall25-TermProject/
 ├── requirements.txt                          # Project dependencies
 ├── .gitignore
 └── README.md                                 # Project documentation
+```
 
 ⚙️ Installation & Setup
 1️⃣ Clone the Repository

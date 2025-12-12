@@ -1,239 +1,213 @@
-# ClaimVerify: AI-Powered Fact Verification System (Deliverable 3)
+ClaimVerify: AI-Powered Fact Verification System
 
-### 🔍 Project Overview
+🔍 Project Overview:
 
-**ClaimVerify** is an AI-driven Fact Verification System designed to assess the credibility of user-submitted claims by combining:
+ClaimVerify is an AI-powered fact verification system designed to assist users in assessing the credibility of natural-language claims through a transparent, evidence-driven, and uncertainty-aware pipeline. Rather than acting as an automated arbiter of truth, the system is explicitly designed as a decision-support tool that grounds predictions in verifiable evidence and clearly communicates model confidence and uncertainty.
 
-- An **offline expert-verified fact-check database** (PolitiFact + Snopes)
-- **Semantic retrieval** using MiniLM embeddings and a FAISS index
-- A **fine-tuned RoBERTa v2 classifier** with calibrated probabilities
-- A **hybrid retrieval fallback** (offline + Google stub)
-- A redesigned **Streamlit interface** with improved usability and transparency
+- The system integrates multiple complementary components to address the challenges of real-world misinformation detection:
 
-Deliverable 3 introduces a more robust, consistent, and user-centered system, focusing on **pipeline stability**, **uncertainty handling**, **explainability**, and **interaction quality**.
+a. Offline expert-verified fact-check databases, constructed from PolitiFact and Snopes
 
----
+b. Semantic retrieval using MiniLM sentence embeddings and a FAISS similarity index
 
-## 🧱 Updated System Architecture
+c. A fine-tuned RoBERTa-based classifier with temperature-scaled probability calibration
 
-The full end-to-end workflow now follows:
+d. A hybrid retrieval fallback mechanism using the Google Custom Search API when offline evidence is insufficient
 
-**User Claim → Preprocessing → Offline Retrieval → Optional Online Fallback → Classification → Calibration → Explainability → UI Display**
+e. Token-level explainability via Integrated Gradients to improve transparency
 
-Key updates in Deliverable 3:
+f. A user-centered Streamlit interface designed to emphasize interpretability, evidence traceability, and uncertainty awareness
 
-- Unified preprocessing for embeddings + classifier  
-- Temperature scaling v2 for better-calibrated confidence  
-- Integrated Gradients explanation heatmaps  
-- Hybrid offline + online-stub retrieval  
-- UI warnings for low similarity  
-- Color-coded prediction bars based on thresholds  
+By combining retrieval, classification, calibration, and explainability into a single end-to-end system, ClaimVerify aims to bridge the gap between research prototypes and deployable fact-verification tools suitable for real-world use.
 
-📌 This architecture is illustrated here:
+🧱 System Architecture:
 
-**Deliverable 3 System Architecture**  
-<img width="436" height="823" alt="Deliverable3Architecture" src="https://github.com/user-attachments/assets/7db93553-6f99-4e26-80e3-72b212acf519" />
+ClaimVerify follows a modular, hybrid system architecture that integrates offline semantic retrieval with online fallback search, calibrated neural inference, and interpretable output generation.
+
+<img width="1326" height="568" alt="ClaimVerifyFinalArchitecture" src="https://github.com/user-attachments/assets/f52cecf5-8eb2-4d85-b6e2-54176342a6ea" />
 
 
----
+The end-to-end pipeline proceeds as follows:
 
-## 🗂 Repository Structure (Deliverable 3)
+User Claim → Text Preprocessing → Offline Semantic Retrieval → Conditional Online Fallback → Classification → Probability Calibration → Explainability → UI Presentation
 
-```bash
+Key architectural characteristics include:
+
+- Unified preprocessing across retrieval and classification stages to ensure consistency
+
+- Near-perfect Recall@k performance in offline semantic retrieval
+
+- Explicit confidence calibration to mitigate overconfident predictions
+
+- Clearly defined uncertainty thresholds that defer ambiguous claims
+
+- Evidence-grounded explanations that support user trust and transparency
+
+This architecture enables ClaimVerify to handle both previously fact-checked claims and emerging or novel claims in a controlled and interpretable manner.
+
+🗂 Repository Structure
 UF-EEE6778-Fall25-TermProject/
 │
 ├── data/
-│   ├── raw/                                  # Original PolitiFact & Snopes datasets
+│   ├── raw/                                   # Original PolitiFact & Snopes datasets
 │   └── processed/
-│       ├── merged_factcheck_datasetcleaned.csv
-│       ├── embeddings/                       # MiniLM embeddings + metadata
-│       └── faiss_index/                      # FAISS index + mapping files
+│       ├── merged_factcheck_dataset_cleaned.csv  # Final unified offline dataset
+│       └── faiss_index/                       # FAISS index + metadata files
 │
 ├── models/
 │   └── classifier/
-│       └── roberta_finetuned_v2/             # Deliverable 3 trained model + calibration
+│       └── roberta_finetuned_v2/              # Final trained RoBERTa model + calibration
+│           ├── pytorch_model.bin
+│           ├── config.json
+│           ├── tokenizer.json
+│           ├── label_mapping.pkl
+│           └── temperature_scaling.pt
 │
 ├── notebooks/
-│   ├── ClassifierTraining_Deliverable3.ipynb
-│   ├── ClassifierTrainingDeliverable2.ipynb
-│   ├── HybridRetrieval_Deliverable3.ipynb
-│   ├── InferencePipeline_Deliverable3.ipynb
-│   ├── OfflineRetrievalSystemDeliverable2.ipynb
-│   ├── data_preprocessingandmerge.ipynb
-│   ├── EDA_MergedDataset.ipynb
-│   └── setup.ipynb
+│   ├── data_preprocessing_and_merge.ipynb     # Dataset cleaning & merging
+│   ├── EDA_MergedDataset.ipynb                 # Exploratory data analysis
+│   ├── ClassifierTraining_Deliverable3.ipynb  # Classifier training & calibration
+│   ├── HybridRetrieval_Deliverable3.ipynb     # FAISS + MiniLM retrieval evaluation
+│   ├── InferencePipeline_Deliverable3.ipynb   # End-to-end pipeline testing
+│   └── google_custom_search_config.png        # Google Custom Search API configuration
 │
-├── src/
-│   ├── data_preprocess.py
-│   ├── embeddings.py
-│   ├── retrieval.py
-│   ├── model.py
-│   ├── inference_pipeline.py                 # (Legacy) Deliverable 2 pipeline
-│   ├── explainability.py
-│   └── __init__.py
+├── src/                                       # Modular backend implementation
+│   ├── __init__.py
+│   ├── preprocessing.py                      # Text normalization & cleaning
+│   ├── embeddings.py                         # MiniLM embedding loader (safe CPU)
+│   ├── retrieval.py                          # FAISS-based semantic retrieval
+│   ├── model.py                              # Calibrated RoBERTa classifier
+│   ├── explainability.py                     # Integrated Gradients explanations
+│   └── inference_pipeline.py                 # Hybrid inference orchestration
 │
 ├── ui/
-│   ├── InferencePipeline_Deliverable3.py     # NEW pipeline for UI
-│   ├── Streamlit_UI_Deliverable3.py          # NEW improved UI
-│   ├── assets/
-│   │   ├── dark_theme.css
-│   │   └── light_theme.css
+│   ├── ClaimVerify_FinalSystem.py             # Final all-in-one Streamlit application code
 │   └── UI Results/
-│       ├── Deliverable2/
-│       └── Deliverable3/                     # Deliverable 3 UI output screenshots
+│       └── FinalResults/                     # Final UI screenshots (report & demo)
+│           ├── ui_main_dashboard.png
+│           ├── ui_evidence_cards.png
+│           ├── ui_token_importance.png
+│           ├── ui_uncertainty_fallback.png
+│           └── ui_totaloutput.png
 │
 ├── results/
-│   ├── EDAResults/                           # Distribution plots, summaries
-│   ├── Deliverable3/                                   # Screenshots used in report
+│   └── Final_confusion_matrix.png            # Final test-set confusion matrix
 │
 ├── Architecture/
-│   ├── Deliverable3Architecture
-│   ├── Deliverable2Architecture
-│   └── Deliverable1Architecture
+│   └── ClaimVerify_FinalArchitecture.png     # Final system architecture diagram
 │
 ├── DeliverableReports/
-│   ├── ProjectDeliverableReport1.pdf
-│   ├── ProjectDeliverableReport2.pdf
-│   └── ProjectDeliverableReport3.pdf         # Deliverable 3 Report
+│   └── Final_IEEE_Report.pdf                 # IEEE-format final report
 │
-├── requirements.txt
+├── requirements.txt                          # Project dependencies
 ├── .gitignore
-└── README.md
-````
+└── README.md                                 # Project documentation
 
----
-
-## ⚙️ Installation & Setup
-
-### 1️⃣ Clone the repository
-
-```bash
+⚙️ Installation & Setup
+1️⃣ Clone the Repository
 git clone https://github.com/<your-username>/UF-EEE6778-Fall25-TermProject.git
 cd UF-EEE6778-Fall25-TermProject
-```
 
-### 2️⃣ Create a virtual environment
-
-```bash
+2️⃣ Create and Activate a Virtual Environment
 python -m venv venv
-source venv/bin/activate        # macOS/Linux
+source venv/bin/activate        # macOS / Linux
 venv\Scripts\activate           # Windows
-```
 
-### 3️⃣ Install dependencies
-
-```bash
+3️⃣ Install Dependencies
 pip install -r requirements.txt
-```
 
----
-
-## 🧪 Running the Updated Deliverable 3 Pipeline
-
-### **1. Run preprocessing (if needed)**
-
-```bash
-jupyter notebook notebooks/data_preprocessingandmerge.ipynb
-```
-
-### **2. Build/Load FAISS Retrieval System**
-
-```bash
-jupyter notebook notebooks/HybridRetrieval_Deliverable3.ipynb
-```
-
-### **3. Train or load the Deliverable 3 classifier**
-
-```bash
-jupyter notebook notebooks/ClassifierTraining_Deliverable3.ipynb
-```
-
-### **4. Run the new inference pipeline**
-
-```bash
-jupyter notebook notebooks/InferencePipeline_Deliverable3.ipynb
-```
-
----
-
-## 🖥️ Running the Deliverable 3 Streamlit UI
-
-```bash
-streamlit run ui/Streamlit_UI_Deliverable3.py
-```
-
-### New UI Enhancements (D3)
-
-* Light theme with consistent typography
-* Color-coded verdict bars (True = green, False = red, Uncertain = yellow)
-* Warning banner for **low similarity**
-* Token-level **explainability heatmap**
-* Scrollable evidence cards
-* Cleaner layout + improved spacing
-
-Example UI Outputs for Deliverable 3 are as follows :
-
-<img width="1908" height="991" alt="StreamlitUI_Deliverable3" src="https://github.com/user-attachments/assets/66a8a51c-29b3-45e2-b2b0-1385a3254d79" />
-<img width="1892" height="979" alt="ui_sample_deliverable3" src="https://github.com/user-attachments/assets/4ba582a7-cedf-4610-889a-c77185fb2fca" />
-<img width="1877" height="970" alt="ui_sampledeliverable3" src="https://github.com/user-attachments/assets/283c0fa2-a88e-4e1f-b567-faede4dadfea" />
+🖥️ Running the Streamlit Application
+streamlit run ui/ClaimVerify_FinalSystem.py
 
 
+The application launches a browser-based interface that allows users to:
 
----
+a. Enter a natural-language claim
 
-## 📊 Deliverable 3 Performance Summary
+b. View retrieved offline or online evidence
 
-| Metric              | Deliverable 2 | Deliverable 3 | Change         |
-| ------------------- | ------------- | ------------- | -------------- |
-| **Accuracy**        | 0.61          | 0.54          | –0.07          |
-| **Macro F1**        | 0.49          | 0.5057        | ↑              |
-| **Macro Precision** | 0.51          | 0.50          | –0.01          |
-| **Macro Recall**    | 0.50          | 0.50          | ~              |
-| **Brier Score**     | 0.1706        | 0.18          | Slightly bad |
+c. Inspect calibrated confidence scores
 
-📌 Full comparison table:
-<img width="661" height="359" alt="comparison_table" src="https://github.com/user-attachments/assets/76a39703-a4d7-46d0-8d6e-63d48bfed7a3" />
+d. Analyze token-level explanation heatmaps
 
-📌 Deliverable 3 confusion matrix:
-<img width="445" height="386" alt="confusion_matrix_D3" src="https://github.com/user-attachments/assets/8cedf87a-abfe-4b41-b087-c63003e55971" />
+e. Identify when hybrid fallback retrieval is triggered
+<img width="1899" height="414" alt="ui_main_dashboard" src="https://github.com/user-attachments/assets/d57a0d70-5d91-4f19-87e2-7004618fb579" />
 
 
----
+- Sample Interface Output:
 
-## 🧩 Key Files
+Example Results
 
-| File                                      | Description                           |
-| ----------------------------------------- | ------------------------------------- |
-| `ui/Streamlit_UI_Deliverable3.py`         | Updated UI with new design + warnings |
-| `ui/InferencePipeline_Deliverable3.py`    | Final inference logic used by UI      |
-| `models/classifier/roberta_finetuned_v2/` | Final trained + calibrated model      |
-| `src/explainability.py`                   | Integrated Gradients implementation   |
-| `docs/architecture_deliverable3.png`      | Final architecture diagram            |
+1. Offline Retrieval (Unified Dataset)
+<img width="1898" height="700" alt="ui_totaloutput" src="https://github.com/user-attachments/assets/1ddb468e-83c7-4c90-bb7a-1f88f3663a8a" />
 
----
 
-## ⚠️ Known Issues & Limitations
+2. Google Search Fallback (Low Similarity / Uncertain Claims)
+<img width="1900" height="694" alt="ui_uncertainty_fallback" src="https://github.com/user-attachments/assets/08bd6658-f853-4cf4-83d0-fbed16b293cf" />
 
-* **Uncertain** class still underperforms (dataset ambiguity)
-* Online fallback currently uses **Google stub**, not full API
-* Integrated Gradients is computationally expensive on CPU/MPS
-* Retrieval similarity < 0.70 may produce weaker evidence
 
----
+📊 Performance Summary (Final System):
 
-## 👤 Author
+The final ClaimVerify system achieves balanced multi-class performance on a three-class fact-verification task while prioritizing calibrated confidence and conservative decision-making.
+<img width="290" height="251" alt="Screenshot 2025-12-11 at 21 08 25" src="https://github.com/user-attachments/assets/cd9e4ab2-abd4-428f-951f-480f86f1fbb3" />
+<img width="289" height="79" alt="Screenshot 2025-12-11 at 21 08 12" src="https://github.com/user-attachments/assets/9afdd4a0-a54e-44b5-b0f7-8e045bdd8859" />
+<img width="262" height="111" alt="Screenshot 2025-12-11 at 21 08 02" src="https://github.com/user-attachments/assets/7c05a7c0-6db2-4ede-ab47-a5f15e212660" />
 
-**Sai Satwik Yarapothini**
-M.S. Applied Data Science, University of Florida
-📧 [saisatwi.yarapot@ufl.edu](mailto:saisatwi.yarapot@ufl.edu)
 
----
+Key highlights include:
 
-## 🚀 Planned Work for Final Deliverable (D4)
+- Overall accuracy of 54% on the test set
 
-* Full research-grade IEEE paper (10–12 pages)
-* Final integration of live online fact-check API
-* Better handling of the **Uncertain** class
-* Robust user-study and usability evaluation
-* Improved explanation consistency and potential LIME fallback
-* Extended bias, fairness, and RAI analysis
+- Macro F1-score of 0.49, indicating balanced performance across classes
+
+- Weighted F1-score of 0.56, reflecting strong misinformation detection
+
+- Calibrated Brier Score of 0.1989, demonstrating improved probability reliability
+
+- Near-perfect Recall@k for offline semantic retrieval
+
+These results emphasize reliability and interpretability over inflated accuracy, which is essential for responsible deployment.
+
+🧩 Key Components:
+ClaimVerify has several key components that forms the system :
+- MiniLM + FAISS	High-speed semantic evidence retrieval
+- RoBERTa	Claim classification
+- Temperature Scaling	Probability calibration
+- Integrated Gradients	Token-level explainability
+- Google Custom Search	Hybrid fallback retrieval
+- Streamlit	User-facing interface
+  
+⚠️ Known Limitations:
+
+- The Uncertain class remains challenging due to inherent label ambiguity
+
+- Integrated Gradients explanations are computationally expensive on CPU
+
+- Live Google API usage is rate-limited with 100 free queries/day
+
+- Performance depends on coverage and quality of existing fact-check databases
+
+🔮 Future Improvements:
+
+- Targeting 80–85% accuracy through ensemble and evidence-aware architectures
+
+- Retrieval-aware and multi-hop reasoning models
+
+- Expanded multilingual support
+
+- Formal user studies for interface validation
+
+- More efficient explanation methods
+
+- Continuous and automated web-index updates
+
+👤 Author
+
+Sai Satwik Yarapothini
+M.S. Applied Data Science
+University of Florida
+📧 saisatwi.yarapot@ufl.edu
+
+📄 License
+
+This project was developed for academic purposes as part of the University of Florida Applied Machine Learning II coursework and is intended for research and educational use.

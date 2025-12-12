@@ -1,40 +1,38 @@
-# Core Numerical & Data Libraries
+# Core numerical & data libraries
 numpy==1.26.4
 pandas==2.1.4
 scikit-learn==1.3.2
 scipy==1.11.4
 
-# PyTorch + MPS Support (macOS)
+# PyTorch (CPU/MPS compatible)
 torch==2.1.0
 torchvision==0.16.0
 torchaudio==2.1.0
 
-# Transformer Models
+# Transformers & tokenization
 transformers==4.36.2
 tokenizers==0.15.0
 
-# Sentence-BERT / MiniLM Embeddings
+# Sentence embeddings
 sentence-transformers==2.2.2
 
-# FAISS for Retrieval (CPU version)
+# FAISS (CPU)
 faiss-cpu==1.7.4
 
-# Explainability (Integrated Gradients)
+# Explainability
 captum==0.6.0
 
 # Streamlit UI
 streamlit==1.29.0
 
-# Visualization & Utilities
+# Visualization
 matplotlib==3.8.2
 seaborn==0.13.1
 tqdm==4.66.1
 
-# For loading URLs & online fallback
+# HTTP & APIs
 requests==2.31.0
 
-# JSON / YAML support
+# Utilities
 pyyaml==6.0.1
-
-# Optional quality-of-life packages
 python-dotenv==1.0.0
